@@ -1,0 +1,49 @@
+{
+  "Comment": "A state machine for the validation flow",
+  "StartAt": "getAppendsLogs",
+  "States": {
+    "getAppendsLogs": {
+      "Type": "Task",
+      "Resource": ":::",
+      "TimeoutSeconds": 30,
+      "ResultPath": "$.results.logs",
+      "OutputPath": "$.results",
+      "Next": "validateAppends "
+    },
+    "validateAppends ": {
+      "Type": "Task",
+      "Resource": ":::",
+      "TimeoutSeconds": 30,
+      "ResultPath": "$.results.isValid",
+      "OutputPath": "$.results",
+      "Next": "isValid"
+    },
+    "isValid": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.isValid.isValid",
+          "BooleanEquals": false,
+          "Next": "createFileTwo"
+        }
+      ],
+      "Default": "createFileOne"
+    },
+    "createFileOne": {
+      "Type": "Task",
+      "Resource": ":::",
+      "TimeoutSeconds": 300,
+      "ResultPath": "$.results.deletionStatus",
+      "OutputPath": "$.results",
+      "End": true
+    },
+    "createFileTwo": {
+      "Type": "Task",
+      "Resource": ":::",
+      "TimeoutSeconds": 300,
+      "ResultPath": "$.results.deletionStatus",
+      "OutputPath": "$.results",
+      "End": true
+    }
+  }
+}
